@@ -1,0 +1,66 @@
+Sample vaadin application that uses shiro jdbcrealm as security provide.
+
+Maven
+====================================================================================
+- install maven 3
+- execute command: mvn clean install
+ 
+Tomcat
+====================================================================================
+- install Tomcat 7
+- deploy war
+- open in web browser the url http://localhost:8080/vaadin-shiro-simple/
+- Login with one of the following users:
+  * admin with password admin,
+  * demo with password demo,
+  * view with password view
+
+shiro.ini confgigurations
+====================================================================================
+[main]
+jdbcRealm = org.apache.shiro.realm.jdbc.JdbcRealm
+jdbcRealm.permissionsLookupEnabled = true
+jdbcRealm.authenticationQuery = SELECT password FROM users WHERE username = ?
+jdbcRealm.userRolesQuery = SELECT role_name FROM user_roles WHERE username = ?
+jdbcRealm.permissionsQuery = SELECT roleper FROM roles_permissions WHERE role_name = ?
+ds = com.jolbox.bonecp.BoneCPDataSource
+ds.driverClass=com.mysql.jdbc.Driver
+ds.jdbcUrl=jdbc:mysql://localhost:3306/dbname
+ds.username = username
+ds.password = password
+jdbcRealm.dataSource=$ds 
+
+database layout
+====================================================================================
+CREATE TABLE IF NOT EXISTS `roles_permissions` (
+ `roleper` char(50) NOT NULL,
+ `role_name` char(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `users` (
+ `username` char(50) NOT NULL,
+ `password` char(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `user_roles` (
+ `role_name` char(50) NOT NULL,
+ `username` char(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+Eclipse
+====================================================================================
+I used Helios Eclipse IDE for Java EE Developers
+Recommended plugins:
+- m2e
+- m2e-extras (WTP plugin required only)
+- Vaadin eclipse plugin
+
+You can import the project via Maven->Existing Maven Projects.
+Execute following operations:
+- Maven->Update Dependencies
+- Maven->Update Project Configuration
+- RunAs->Maven Install
+- Project->Clean
+- Run As->Run on Server
+
+
